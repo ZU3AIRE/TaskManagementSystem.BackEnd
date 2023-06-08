@@ -45,5 +45,22 @@ namespace TaskManagementSystem.WebApi.Controllers
 
             return Ok(entity);
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            if (db.Tasks.Any(x => x.TaskId == id))
+            {
+                db.Tasks.Remove(db.Tasks.Find(id)!);
+                db.SaveChanges();
+
+                return Ok("Deleted");
+            }
+            else
+            {
+                return NotFound("Task does not exist");
+            }
+        }
+
     }
 }
