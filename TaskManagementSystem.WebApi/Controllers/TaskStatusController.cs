@@ -42,7 +42,7 @@ namespace TaskManagementSystem.WebApi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{status}")]
         public IActionResult Delete(string status)
         {
             if(db.TaskStatuses.Any(x =>x.Status == status))
