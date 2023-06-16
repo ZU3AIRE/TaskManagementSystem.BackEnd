@@ -36,7 +36,7 @@ namespace TaskManagementSystem.WebApi.Controllers
             Database.Entities.Task entity = model.ToEntity();
 
             // For adding Task Status Pending
-            var status = db.TaskStatuses.First(x => x.Status == "Pending"); 
+            var status = db.TaskStatuses.First(x => x.Status == "Pending");
             entity.Status = status!;
 
             // Add new object to the DbSet
