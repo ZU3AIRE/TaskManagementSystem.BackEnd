@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagementSystem.WebApi.Database;
+using TaskManagementSystem.WebApi.Models;
 
 namespace TaskManagementSystem.WebApi.Controllers
 {
@@ -22,7 +23,7 @@ namespace TaskManagementSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddStatus(string status)
+        public IActionResult AddStatus(string status, TaskStatusModel model)
         {
             if (db.TaskStatuses.Any(x => x.Status == status))
             {
@@ -32,8 +33,9 @@ namespace TaskManagementSystem.WebApi.Controllers
             {
                 Database.Entities.TaskStatus taskStatus = new Database.Entities.TaskStatus
                 {
-                    Status = status
-                };
+                    Status = status,
+                    IsActive = model.IsActive
+                    };
 
                 db.TaskStatuses.Add(taskStatus);
                 db.SaveChanges();

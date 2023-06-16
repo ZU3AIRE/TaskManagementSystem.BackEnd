@@ -1,6 +1,6 @@
-﻿namespace TaskManagementSystem.WebApi.Database.Entities
+﻿namespace TaskManagementSystem.WebApi.Models
 {
-    public class TaskStatus
+    public class TaskStatusModel
     {
         public int TaskStatusID { get; set; }
         public string Status { get; set; } = string.Empty;

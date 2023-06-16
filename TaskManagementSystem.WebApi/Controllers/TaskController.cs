@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography.X509Certificates;
 using TaskManagementSystem.WebApi.Database;
+using TaskManagementSystem.WebApi.Database.Entities;
 using TaskManagementSystem.WebApi.Models;
 using TaskManagementSystem.WebApi.Utilities;
+using Task = TaskManagementSystem.WebApi.Database.Entities.Task;
 
 namespace TaskManagementSystem.WebApi.Controllers
 {
@@ -32,18 +34,26 @@ namespace TaskManagementSystem.WebApi.Controllers
         [HttpPost]
         public ActionResult AddTask(AddTaskModel model)
         {
+            Database.Entities.Task task = new Database.Entities.Task
+            {
+                Title = model.Title,
+                Description = model.Description,
+                IsActive = model.IsActive
+
+            };
             // Create new object of Entity Task
-            Database.Entities.Task entity = model.ToEntity();
+            //Task entity = model.ToEntity();
 
-            // For adding Task Status Pending
-            var status = db.TaskStatuses.First(x => x.Status == "Pending");
-            entity.Status = status!;
 
-            // Add new object to the DbSet
-            db.Tasks.Add(entity);
+            //// For adding Task Status Pending
+            //var status = db.TaskStatuses.First(x => x.Status == "Pending");
+            //entity.Status = status!;
+
+            //// Add new object to the DbSet
+            db.Tasks.Add(task);
             db.SaveChanges();
 
-            return Ok(entity);
+            return Ok(task);
         }
 
         [HttpDelete("{id}")]
