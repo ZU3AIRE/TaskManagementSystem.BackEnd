@@ -9,11 +9,11 @@ using TaskManagementSystem.WebApi.Database;
 
 #nullable disable
 
-namespace TaskManagementSystem.WebApi.Migrations
+namespace TaskManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230608180106_init")]
-    partial class init
+    [Migration("20230616114442_user")]
+    partial class user
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,6 +109,9 @@ namespace TaskManagementSystem.WebApi.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()

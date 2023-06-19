@@ -8,7 +8,7 @@ using TaskManagementSystem.WebApi.Database;
 
 #nullable disable
 
-namespace TaskManagementSystem.WebApi.Migrations
+namespace TaskManagementSystem.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -106,6 +106,9 @@ namespace TaskManagementSystem.WebApi.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
