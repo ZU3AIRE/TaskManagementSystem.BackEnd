@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using TaskManagementSystem.WebApi.Database;
 using TaskManagementSystem.WebApi.Database.Entities;
 using TaskManagementSystem.WebApi.Models;
@@ -10,52 +11,96 @@ namespace TaskManagementSystem.WebApi.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly AppDbContext db;
-
+        private AppDbContext db;
         public UserController(AppDbContext _db)
         {
-            db = _db;
-        }
 
-        // Login Method
-        [HttpPost]
-        public IActionResult Login(LoginModel model)
+            db = _db;
+
+        }
+        public AppDbContext Db { get; }
+        [HttpGet]
+        public IActionResult GetAll()
         {
-            // Find user from db
-            var user = db.Users.FirstOrDefault(x => x.Email == model.Email && x.Password == model.Password);
+            var users = db.Users
+           .Where(x => x.IsActive == true)
+           .Select(x => new
+           {
+               x.UserId,
+               x.Name,
+               x.Email,
+           }).ToList();
+
+            return Ok(users);
+
+        }
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            var user = db.Users
+            .Where(x => x.UserId == id)
+            .Select(x => new
+            {
+                //x.UserId,
+                x.Name,
+                x.Email,
+            })
+           .FirstOrDefault();
 
             if (user == null)
             {
-                return Ok("Incorrect username or password.");
+                return Ok(false);
             }
-            else
-            {
-                return Ok(true);
-            }
+
+            return Ok(user);
         }
-
-        // Signup Method
         [HttpPost]
-        public IActionResult Signup(SignupModel model)
+        public IActionResult AddUser(UserModel userModel)
         {
-            if (db.Users.Any(x => x.Email == model.Email))
+            try
             {
-                return Ok("User with same email, already exist.");
-            }
-            else
-            {
-                // Make user object
-                User user = model.ToEntity();
+                User user = new User
+                {
+                    Name = userModel.Name,
+                    Email = userModel.Email,
+                    Password = userModel.Password,
+                    //IsActive = userModel.IsActive
 
-                // Add newly created object to the DbSet
+                };
+                // SAVE DATA TO DB
                 db.Users.Add(user);
                 db.SaveChanges();
-
-                return Ok(user);
+                return Ok(true);
+            }
+            catch (Exception)
+            {
+                return Ok(false);
             }
         }
-
-     
-
+        [HttpPost]
+        public IActionResult UpdateUser(int id, UserModel model)
+        {
+            var user = db.Users.Find(id);
+            user.Name = model.Name;
+            user.Email = model.Email;
+            user.Password = model.Password;
+            //user.IsActive = model.IsActive;
+            //SAVE DATA TO DB
+            db.SaveChanges();
+            return Ok(true);
+        }
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            var user = db.Users.Find(id);
+            if (user == null)
+            {
+                return Ok(false);
+            }
+            user.IsActive = false;
+            db.SaveChanges();
+            return Ok(true);
+        }
     }
 }
+
