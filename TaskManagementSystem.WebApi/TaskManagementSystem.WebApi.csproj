@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TaskManagementSystem.Database\TaskManagementSystem.Database.csproj" />
+    <ProjectReference Include="..\TaskManagementSystem.Repositories\TaskManagementSystem.Repositories.csproj" />
   </ItemGroup>
 
 </Project>

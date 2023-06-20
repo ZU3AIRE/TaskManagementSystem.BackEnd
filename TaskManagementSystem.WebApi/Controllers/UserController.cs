@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TaskManagementSystem.Repositories;
+using TaskManagementSystem.Repositories.Implemenatation;
 using TaskManagementSystem.WebApi.Database;
 using TaskManagementSystem.WebApi.Database.Entities;
 using TaskManagementSystem.WebApi.Models;
@@ -12,95 +14,94 @@ namespace TaskManagementSystem.WebApi.Controllers
     public class UserController : ControllerBase
     {
         private AppDbContext db;
-        public UserController(AppDbContext _db)
+        public UserController(AppDbContext _db, UserRepository repo)
         {
-
             db = _db;
-
+            Repo = repo;
         }
+
         public AppDbContext Db { get; }
+        public UserRepository Repo { get; }
+
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users = db.Users
-           .Where(x => x.IsActive == true)
-           .Select(x => new
-           {
-               x.UserId,
-               x.Name,
-               x.Email,
-           }).ToList();
-
+            var users = Repo.GetAll();
             return Ok(users);
-
         }
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var user = db.Users
-            .Where(x => x.UserId == id)
-            .Select(x => new
-            {
-                //x.UserId,
-                x.Name,
-                x.Email,
-            })
-           .FirstOrDefault();
-
+            var user = Repo.GetById(id);
             if (user == null)
             {
                 return Ok(false);
             }
-
-            return Ok(user);
+            var userModel = new UserModel
+            {
+                Name = user.Name,
+                Email = user.Email
+            };
+            return Ok(userModel);
         }
         [HttpPost]
         public IActionResult AddUser(UserModel userModel)
         {
-            try
+            User user = new User
             {
-                User user = new User
-                {
-                    Name = userModel.Name,
-                    Email = userModel.Email,
-                    Password = userModel.Password,
-                    //IsActive = userModel.IsActive
+                Name = userModel.Name,
+                Email = userModel.Email,
+                Password = userModel.Password
+            };
 
-                };
-                // SAVE DATA TO DB
-                db.Users.Add(user);
-                db.SaveChanges();
-                return Ok(true);
-            }
-            catch (Exception)
+            bool AddUser = Repo.Add(user);
+            if (AddUser == false)
             {
                 return Ok(false);
             }
+            else
+            {
+                return Ok(true);
+            }
         }
+
         [HttpPost]
         public IActionResult UpdateUser(int id, UserModel model)
         {
-            var user = db.Users.Find(id);
-            user.Name = model.Name;
-            user.Email = model.Email;
-            user.Password = model.Password;
-            //user.IsActive = model.IsActive;
-            //SAVE DATA TO DB
-            db.SaveChanges();
-            return Ok(true);
-        }
-        [HttpDelete("{id}")]
-        public IActionResult DeleteUser(int id)
-        {
-            var user = db.Users.Find(id);
+            User? user = Repo.GetById(id);
             if (user == null)
             {
                 return Ok(false);
             }
-            user.IsActive = false;
-            db.SaveChanges();
-            return Ok(true);
+
+            user.Name = model.Name;
+            user.Email = model.Email;
+            user.Password = model.Password;
+
+            bool result = Repo.Update(user, id);
+            if (result == false)
+            {
+                return Ok(false);
+            }
+            else
+            {
+                return Ok(true);
+            }
         }
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            bool result = Repo.Delete(id);
+            if (result != true)
+            {
+                return Ok(false);
+            }
+            else
+            {
+                return Ok(true);
+            }
+        }
+
     }
 }
 

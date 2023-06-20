@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using TaskManagementSystem.Repositories.Implemenatation;
 using TaskManagementSystem.WebApi.Database;
+using TaskManagementSystem.WebApi.Database.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +12,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
-
+ 
+//Dependency Injections  
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<TaskRepository>();  
 // Added DbContext
 builder.Services.AddDbContext<AppDbContext>(x =>
 {
