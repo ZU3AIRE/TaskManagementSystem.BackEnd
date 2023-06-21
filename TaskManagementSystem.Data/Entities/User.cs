@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TaskManagementSystem.WebApi.Database.Entities
+namespace TaskManagementSystem.Data.Entities
 {
     public class User
     {
@@ -10,5 +10,5 @@ namespace TaskManagementSystem.WebApi.Database.Entities
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public bool IsActive { get; set; }
-    }   
+    }
 }

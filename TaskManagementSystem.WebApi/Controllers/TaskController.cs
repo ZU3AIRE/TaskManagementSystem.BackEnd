@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography.X509Certificates;
-using TaskManagementSystem.WebApi.Database;
-using TaskManagementSystem.WebApi.Models;
+using TaskManagementSystem.Repositories;
+using TaskManagementSystem.Repositories.Models;
 using TaskManagementSystem.WebApi.Utilities;
 
 namespace TaskManagementSystem.WebApi.Controllers
@@ -10,57 +10,66 @@ namespace TaskManagementSystem.WebApi.Controllers
     [Route("api/[controller]/[action]")]
     public class TaskController : ControllerBase
     {
-        private readonly AppDbContext db;
+        //private readonly AppDbContext db;
 
-        public TaskController(AppDbContext _db)
+        //public TaskController(AppDbContext _db)
+        //{
+        //    db = _db;
+        //}
+
+        private readonly ITaskRepository taskRepository;
+
+        public TaskController(ITaskRepository _taskRepository)
         {
-            db = _db;
+            taskRepository = _taskRepository;
         }
+
+
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            return Ok(db.Tasks.FirstOrDefault(x => x.TaskId == id));
-        }
+            var task = taskRepository.Get(id);
 
+            if (task == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(task);
+        }
         [HttpGet]
         public ActionResult GetAll()
         {
-            return Ok(db.Tasks.ToList());
+            var tasks = taskRepository.GetAll();
+
+            return Ok(tasks);
         }
 
         [HttpPost]
+        [HttpPost]
         public ActionResult AddTask(AddTaskModel model)
         {
-            // Create new object of Entity Task
-            Database.Entities.Task entity = model.ToEntity();
+            var success = taskRepository.AddTask(model);
 
-            // For adding Task Status Pending
-            var status = db.TaskStatuses.First(x => x.Status == "Pending"); 
-            entity.Status = status!;
+            if (!success)
+            {
+                return BadRequest();
+            }
 
-            // Add new object to the DbSet
-            db.Tasks.Add(entity);
-            db.SaveChanges();
-
-            return Ok(entity);
+            return Ok();
         }
-
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if (db.Tasks.Any(x => x.TaskId == id))
-            {
-                db.Tasks.Remove(db.Tasks.Find(id)!);
-                db.SaveChanges();
+            var success = taskRepository.Delete(id);
 
-                return Ok("Deleted");
-            }
-            else
+            if (!success)
             {
-                return NotFound("Task does not exist");
+                return NotFound();
             }
+
+            return Ok();
         }
-
     }
 }

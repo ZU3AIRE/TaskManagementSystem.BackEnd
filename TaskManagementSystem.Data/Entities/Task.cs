@@ -1,4 +1,4 @@
-﻿namespace TaskManagementSystem.WebApi.Database.Entities
+﻿namespace TaskManagementSystem.Data.Entities
 {
     public class Task
     {
@@ -6,8 +6,10 @@
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
 
+        public bool IsActive { get; set; }
+
 
         // Navigation Property for making one-to-one relationship
-        public TaskStatus Status { get; set; } 
+        public TaskStatus Status { get; set; }
     }
 }

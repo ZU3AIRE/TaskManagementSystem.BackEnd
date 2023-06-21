@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TaskManagementSystem.WebApi.Database;
+using TaskManagementSystem.Data;
 
 namespace TaskManagementSystem.WebApi.Controllers
 {
@@ -30,7 +30,7 @@ namespace TaskManagementSystem.WebApi.Controllers
             }
             else
             {
-                Database.Entities.TaskStatus taskStatus = new Database.Entities.TaskStatus
+                Data.Entities.TaskStatus taskStatus = new TaskManagementSystem.Data.Entities.TaskStatus
                 {
                     Status = status
                 };

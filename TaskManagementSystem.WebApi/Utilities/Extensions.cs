@@ -1,5 +1,5 @@
-﻿using TaskManagementSystem.WebApi.Database.Entities;
-using TaskManagementSystem.WebApi.Models;
+﻿using TaskManagementSystem.Data.Entities;
+using TaskManagementSystem.Repositories.Models;
 
 namespace TaskManagementSystem.WebApi.Utilities
 {
@@ -18,9 +18,9 @@ namespace TaskManagementSystem.WebApi.Utilities
         #endregion
 
         #region For Task Entity
-        public static Database.Entities.Task ToEntity(this AddTaskModel model)
+        public static Data.Entities.Task ToEntity(this AddTaskModel model)
         {
-            return new Database.Entities.Task
+            return new TaskManagementSystem.Data.Entities.Task
             {
                 Title = model.Title,
                 Description = model.Description

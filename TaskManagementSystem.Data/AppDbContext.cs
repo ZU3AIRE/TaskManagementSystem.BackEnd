@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TaskManagementSystem.WebApi.Database.Entities;
-using Task = TaskManagementSystem.WebApi.Database.Entities.Task;
-using TaskStatus = TaskManagementSystem.WebApi.Database.Entities.TaskStatus;
+using TaskManagementSystem.Data.Entities;
+using Task = TaskManagementSystem.Data.Entities.Task;
+using TaskStatus = TaskManagementSystem.Data.Entities.TaskStatus;
 
-namespace TaskManagementSystem.WebApi.Database
+namespace TaskManagementSystem.Data
 {
     public class AppDbContext : DbContext
     {
