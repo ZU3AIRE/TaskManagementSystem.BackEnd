@@ -26,7 +26,12 @@ namespace TaskManagementSystem.WebApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users = Repo.GetAll();
+            var users = Repo.GetAll().Select(x => new UserModel
+            {
+                Name = x.Name,
+                Email = x.Email,
+                Password = x.Password
+            });
             return Ok(users);
         }
         [HttpGet("{id}")]

@@ -22,7 +22,6 @@ namespace TaskManagementSystem.Repositories.Implemenatation
         public User? GetById(int id)
         {
             return db.Users.Find(id);
-            throw new NotImplementedException();
         }
         public bool Add(User user)
         {

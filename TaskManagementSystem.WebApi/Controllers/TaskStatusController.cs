@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TaskManagementSystem.Repositories.Implemenatation;
 using TaskManagementSystem.WebApi.Database;
+using TaskManagementSystem.WebApi.Database.Entities;
 using TaskManagementSystem.WebApi.Models;
 
 namespace TaskManagementSystem.WebApi.Controllers
@@ -10,44 +12,45 @@ namespace TaskManagementSystem.WebApi.Controllers
     public class TaskStatusController : ControllerBase
     {
         private readonly AppDbContext db;
+        private readonly TaskStatusRepository repo;
 
-        public TaskStatusController(AppDbContext _db)
+        public TaskStatusController(AppDbContext _db, TaskStatusRepository repo)
         {
             db = _db;
+            this.repo = repo;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(db.TaskStatuses.ToList());
+            var tasksStatus = repo.GetAll();
+            return Ok(tasksStatus);
         }
 
         [HttpPost]
         public IActionResult AddStatus(string status, TaskStatusModel model)
         {
-            if (db.TaskStatuses.Any(x => x.Status == status))
+            var task = new Database.Entities.TaskStatus
             {
-                return Ok("Already Exist.");
+               Status = model.Status,
+            };
+            var Add = repo.Add(task);
+            if (Add == true)
+            {
+                return Ok(task);
             }
             else
             {
-                Database.Entities.TaskStatus taskStatus = new Database.Entities.TaskStatus
-                {
-                    Status = status,
-                    IsActive = model.IsActive
-                    };
-
-                db.TaskStatuses.Add(taskStatus);
-                db.SaveChanges();
-
-                return Ok(taskStatus);
+                return Ok(false);
             }
+
+
         }
 
         [HttpDelete("{status}")]
         public IActionResult Delete(string status)
         {
-            if(db.TaskStatuses.Any(x =>x.Status == status))
+            if (db.TaskStatuses.Any(x => x.Status == status))
             {
                 db.TaskStatuses.Remove(db.TaskStatuses.First(x => x.Status == status));
                 db.SaveChanges();
@@ -58,6 +61,7 @@ namespace TaskManagementSystem.WebApi.Controllers
                 return NotFound("Specified TaskStatus does not exist");
 
             }
+
         }
     }
 }

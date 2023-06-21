@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TaskManagementSystem.Repositories.Implemenatation;
 using TaskManagementSystem.WebApi.Database;
 using TaskManagementSystem.WebApi.Database.Entities;
 using TaskManagementSystem.WebApi.Models;
@@ -12,43 +13,52 @@ namespace TaskManagementSystem.WebApi.Controllers
     {
         private readonly AppDbContext db;
 
-        public DeveloperController(AppDbContext _db)
+        public DeveloperRepository repo { get; }
+
+        public DeveloperController(AppDbContext _db, DeveloperRepository Repo)
         {
             db = _db;
+            repo = Repo;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var dev = db.Developers.ToList();
-            return Ok(dev);
+            var tasks = repo.GetAll();
+            return Ok(tasks);
         }
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var dev = db.Developers.Find(id);
-            return Ok();
+            var dev = repo.GetById(id);
+            if (dev == null)
+            {
+                return NotFound("Task not found");
+            }
+            return Ok(dev);
         }
         [HttpPost]
         public IActionResult AddDeveloper(DeveloperModel devModel)
         {
             try
             {
-                Developer dev = new Developer
+                //  var found = db.TaskStatuses.FirstOrDefault(x => x.Status == "Pending");
+
+                var dev = new Developer
                 {
-                    //  UserId = userModel.UserId,
                     Name = devModel.Name,
                     Email = devModel.Email,
-                    Password = devModel.Password,
-                    IsActive = devModel.IsActive
-
+                    Password = devModel.Password
                 };
-
-                db.Developers.Add(dev);
-                db.SaveChanges();
-
-
-                return Ok(true);
+                var Add = repo.Add(dev);
+                if (Add == true)
+                {
+                    return Ok(dev);
+                }
+                else
+                {
+                    return Ok(false);
+                }
             }
             catch (Exception)
             {
@@ -63,24 +73,27 @@ namespace TaskManagementSystem.WebApi.Controllers
             dev.Name = model.Name;
             dev.Email = model.Email;
             dev.Password = model.Password;
-            dev.IsActive = model.IsActive;
-
-
+            //dev.IsActive = model.IsActive;
             db.SaveChanges();
             return Ok(true);
         }
         [HttpDelete("{id}")]
         public IActionResult DeleteDeveloper(int id)
         {
-            var dev = db.Developers.Find(id);
+            var dev = repo.GetById(id);
             if (dev == null)
             {
                 return Ok(false);
             }
-
-            db.Developers.Remove(dev);
-            db.SaveChanges();
-            return Ok(true);
+            bool deleted = repo.Delete(id);
+            if (deleted == true)
+            {
+                return Ok(true);
+            }
+            else
+            {
+                return Ok(false);
+            }
 
         }
 

@@ -15,7 +15,9 @@ builder.Services.AddCors();
  
 //Dependency Injections  
 builder.Services.AddScoped<UserRepository>();
-builder.Services.AddScoped<TaskRepository>();  
+builder.Services.AddScoped<TaskRepository>();
+builder.Services.AddScoped<DeveloperRepository>();
+builder.Services.AddScoped<TaskStatusRepository>();
 // Added DbContext
 builder.Services.AddDbContext<AppDbContext>(x =>
 {

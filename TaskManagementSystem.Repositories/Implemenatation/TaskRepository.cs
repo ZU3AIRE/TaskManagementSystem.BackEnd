@@ -22,12 +22,6 @@ namespace TaskManagementSystem.Repositories.Implemenatation
             db.SaveChanges();
             return true;
 
-            //Task tak = new Task
-            //{
-            //    Title = model.Title,
-            //    Description = model.Description,
-            //    IsActive = model.IsActive
-            //};
         }
 
         public bool Delete(int id)

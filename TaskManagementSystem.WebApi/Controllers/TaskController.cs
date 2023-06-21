@@ -17,13 +17,11 @@ namespace TaskManagementSystem.WebApi.Controllers
         private readonly AppDbContext db;
 
         public TaskRepository Repo { get; }
-
         public TaskController(AppDbContext _db, TaskRepository repo)
         {
             db = _db;
             Repo = repo;
         }
-
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
@@ -33,7 +31,6 @@ namespace TaskManagementSystem.WebApi.Controllers
                 return NotFound("Task not found");
             }
             return Ok(task);
-            //return Ok(db.Tasks.FirstOrDefault(x => x.TaskId == id));
         }
 
         [HttpGet]
@@ -41,20 +38,21 @@ namespace TaskManagementSystem.WebApi.Controllers
         {
             var tasks = Repo.GetAll();
             return Ok(tasks);
-            // return Ok(db.Tasks.ToList());
         }
-
         [HttpPost]
         public ActionResult AddTask(AddTaskModel model)
         {
+
+            var found = db.TaskStatuses.FirstOrDefault(x => x.Status == "Pending");
+
             var task = new Task
             {
                 Title = model.Title,
                 Description = model.Description,
-                IsActive = model.IsActive
+                Status = found
             };
             var Add = Repo.Add(task);
-            if (Add==true)
+            if (Add == true)
             {
                 return Ok(task);
             }
@@ -62,18 +60,7 @@ namespace TaskManagementSystem.WebApi.Controllers
             {
                 return Ok(false);
             }
-
-            //Database.Entities.Task task = new Database.Entities.Task
-            //{
-            //    Title = model.Title,
-            //    Description = model.Description,
-            //    IsActive = model.IsActive
-
-            //};
-            //db.Tasks.Add(task);
-            //db.SaveChanges();
         }
-
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
@@ -82,7 +69,6 @@ namespace TaskManagementSystem.WebApi.Controllers
             {
                 return Ok(false);
             }
-
             bool deleted = Repo.Delete(id);
             if (deleted == true)
             {
@@ -92,22 +78,6 @@ namespace TaskManagementSystem.WebApi.Controllers
             {
                 return Ok(false);
             }
-
-
-
-
-            //if (db.Tasks.Any(x => x.TaskId == id))
-            //{
-            //    db.Tasks.Remove(db.Tasks.Find(id)!);
-            //    db.SaveChanges();
-
-            //    return Ok("Deleted");
-            //}
-            //else
-            //{
-            //    return NotFound("Task does not exist");
-            //}
         }
-
     }
 }
