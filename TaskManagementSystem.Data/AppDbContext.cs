@@ -15,5 +15,16 @@ namespace TaskManagementSystem.Data
         public DbSet<Developer> Developers { get; set; }
         public DbSet<Task> Tasks { get; set; }
         public DbSet<TaskStatus> TaskStatuses { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TaskStatus>().HasData(
+                new TaskStatus { TaskStatusID = 1, Status = "Pending", IsActive = true},
+                new TaskStatus { TaskStatusID = 2, Status = "Development", IsActive = true},
+                new TaskStatus { TaskStatusID = 3, Status = "Closed", IsActive = true}
+            );
+            base.OnModelCreating(modelBuilder); 
+        }
     }
 }
