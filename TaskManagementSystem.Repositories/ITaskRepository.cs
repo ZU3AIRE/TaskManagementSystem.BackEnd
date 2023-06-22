@@ -13,6 +13,7 @@ namespace TaskManagementSystem.Repositories
         Task[] GetAll();
         Task GetById(int id);
         bool Add(Task task);
+        bool Update(Task task);
         bool Delete(int id);
     }
 }

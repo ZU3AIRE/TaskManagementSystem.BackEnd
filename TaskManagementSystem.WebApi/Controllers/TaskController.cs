@@ -61,6 +61,27 @@ namespace TaskManagementSystem.WebApi.Controllers
                 return Ok(false);
             }
         }
+        // Edit Task EndPoint For new Branch
+        [HttpPost("{id}")]
+        public IActionResult EditTask(int id, AddTaskModel model)
+        {
+            var task = Repo.GetById(id);
+            if (task == null)
+            {
+                return NotFound("Task not found");
+            }
+            task.Title = model.Title;
+            task.Description = model.Description;
+            var updatedTask = Repo.Update(task);
+            if (updatedTask != null)
+            {
+                return Ok(updatedTask);
+            }
+            else
+            {
+                return Ok(false);
+            }
+        }
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

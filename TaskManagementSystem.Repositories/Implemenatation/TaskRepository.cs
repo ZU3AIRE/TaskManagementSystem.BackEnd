@@ -23,10 +23,17 @@ namespace TaskManagementSystem.Repositories.Implemenatation
             return true;
 
         }
+        //Update For new Branch
+        public bool Update(WebApi.Database.Entities.Task task)
+        {
+            db.Tasks.Update(task);
+            db.SaveChanges();
+            return true;
+        }
 
         public bool Delete(int id)
         {
-            var tasks = db.Users.Find(id);
+            var tasks = db.Tasks.Find(id);
             if (tasks == null)
             {
                 return false;
@@ -38,7 +45,8 @@ namespace TaskManagementSystem.Repositories.Implemenatation
 
         public WebApi.Database.Entities.Task[] GetAll()
         {
-            return db.Tasks.ToArray();
+            return db.Tasks.Where(x=>x.IsActive ==true).ToArray();
+            //return db.Tasks.ToArray();
         }
 
         public WebApi.Database.Entities.Task? GetById(int id)
