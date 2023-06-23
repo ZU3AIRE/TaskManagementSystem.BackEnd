@@ -44,6 +44,33 @@ namespace TaskManagementSystem.Repositories.Implementtation
             }
         }
 
+         public bool EditTask(AddTaskModel model)
+        {
+            try
+            {
+                var task = db.Tasks.Find(model.TaskId);
+
+                if (task != null)
+                {
+                    task.Title = model.Title;
+                    task.Description = model.Description;
+
+                    // Update the task in the DbSet
+                    db.SaveChanges();
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions or log the error
+                return false;
+            }
+        }
 
         public bool Delete(int id)
         {

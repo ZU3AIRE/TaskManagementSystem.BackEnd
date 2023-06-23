@@ -14,6 +14,8 @@ namespace TaskManagementSystem.Repositories
         Task[] GetAll();
         Task Get (int id);
         bool AddTask(AddTaskModel model);
+        bool EditTask(AddTaskModel model);
+
         bool Delete(int id);
     }
 }

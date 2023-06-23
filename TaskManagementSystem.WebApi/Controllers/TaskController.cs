@@ -47,7 +47,6 @@ namespace TaskManagementSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        [HttpPost]
         public ActionResult AddTask(AddTaskModel model)
         {
             var success = taskRepository.AddTask(model);
@@ -59,6 +58,25 @@ namespace TaskManagementSystem.WebApi.Controllers
 
             return Ok();
         }
+
+        [HttpPost]
+        public IActionResult EditTask(AddTaskModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = taskRepository.EditTask(model);
+                if (result)
+                {
+                    return Ok(); // Return 200 OK if the task was successfully edited
+                }
+                else
+                {
+                    return BadRequest("Failed to edit the task."); // Return 400 Bad Request if editing the task failed
+                }
+            }
+            return BadRequest(ModelState); // Return 400 Bad Request if the model state is invalid
+        }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
