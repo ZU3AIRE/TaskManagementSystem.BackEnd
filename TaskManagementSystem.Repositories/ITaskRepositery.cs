@@ -12,9 +12,9 @@ namespace TaskManagementSystem.Repositories
     public interface ITaskRepository
     {
         Task[] GetAll();
-        Task Get (int id);
+        Task Get(int id);
         bool AddTask(AddTaskModel model);
-        bool EditTask(AddTaskModel model);
+        bool EditTask(Taskmodel model, int id);
 
         bool Delete(int id);
     }

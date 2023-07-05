@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using TaskManagementSystem.Data;
 using TaskManagementSystem.Repositories.Models;
 
@@ -24,7 +25,8 @@ namespace TaskManagementSystem.Repositories.Implementtation
                 var task = new TaskManagementSystem.Data.Entities.Task
                 {
                     Title = model.Title,
-                    Description = model.Description
+                    Description = model.Description,
+                    IsActive = true
                 };
 
                 // For adding Task Status Pending
@@ -44,11 +46,12 @@ namespace TaskManagementSystem.Repositories.Implementtation
             }
         }
 
-         public bool EditTask(AddTaskModel model)
-        {
+        public bool EditTask(Taskmodel model, int id)
+            {
             try
             {
-                var task = db.Tasks.Find(model.TaskId);
+                var task = db.Tasks.FirstOrDefault(x => x.TaskId == id);
+             
 
                 if (task != null)
                 {
@@ -56,6 +59,15 @@ namespace TaskManagementSystem.Repositories.Implementtation
                     task.Description = model.Description;
 
                     // Update the task in the DbSet
+                    var status = db.TaskStatuses.FirstOrDefault(x => x.Status == model.Status);
+                    if (status != null)
+                    {
+                        task.Status = status;
+                    }
+
+
+
+
                     db.SaveChanges();
 
                     return true;
@@ -67,26 +79,21 @@ namespace TaskManagementSystem.Repositories.Implementtation
             }
             catch (Exception ex)
             {
-                // Handle any exceptions or log the error
                 return false;
             }
         }
 
         public bool Delete(int id)
         {
-            var task = db.Tasks.Find(id);
-
-            if (task != null)
-            {
-                db.Tasks.Remove(task);
-                db.SaveChanges();
-
-                return true;
-            }
-            else
+            var tsk = db.Tasks.Find(id);
+            if (tsk == null)
             {
                 return false;
             }
+
+            tsk.IsActive = false;
+            db.SaveChanges();
+            return true;
         }
 
         public Data.Entities.Task Get(int id)
@@ -96,7 +103,8 @@ namespace TaskManagementSystem.Repositories.Implementtation
 
         public Data.Entities.Task[] GetAll()
         {
-            return db.Tasks.ToArray();
+            return db.Tasks.Include(x => x.Status).Where(x => x.IsActive == true).ToArray();
+
         }
     }
 }

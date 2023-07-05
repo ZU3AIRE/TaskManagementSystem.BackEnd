@@ -14,12 +14,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-
+builder.Services.AddScoped<ITaskStatusRepository, TaskStatusRepository>();
 builder.Services.AddScoped<IDeveloperRepository, DeveloperRepository>();
-
-
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-
 builder.Services.AddScoped<IUserRepositery,UserRepositery>();
 // Added DbContext
 builder.Services.AddDbContext<AppDbContext>(x =>

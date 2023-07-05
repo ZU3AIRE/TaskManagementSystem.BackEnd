@@ -10,12 +10,6 @@ namespace TaskManagementSystem.WebApi.Controllers
     [Route("api/[controller]/[action]")]
     public class TaskController : ControllerBase
     {
-        //private readonly AppDbContext db;
-
-        //public TaskController(AppDbContext _db)
-        //{
-        //    db = _db;
-        //}
 
         private readonly ITaskRepository taskRepository;
 
@@ -60,21 +54,21 @@ namespace TaskManagementSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditTask(AddTaskModel model)
+        public IActionResult EditTask(Taskmodel model ,int id)
         {
             if (ModelState.IsValid)
             {
-                var result = taskRepository.EditTask(model);
-                if (result)
-                {
-                    return Ok(); // Return 200 OK if the task was successfully edited
+                var res = taskRepository.EditTask(model, id);
+                if (res)
+                { 
+                    return Ok(); 
                 }
                 else
                 {
-                    return BadRequest("Failed to edit the task."); // Return 400 Bad Request if editing the task failed
+                    return BadRequest("Failed to edit the task."); 
                 }
             }
-            return BadRequest(ModelState); // Return 400 Bad Request if the model state is invalid
+            return BadRequest(ModelState);
         }
 
         [HttpDelete("{id}")]

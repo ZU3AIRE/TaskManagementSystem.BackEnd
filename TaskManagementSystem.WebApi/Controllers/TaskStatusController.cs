@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagementSystem.Data;
+using TaskManagementSystem.Repositories;
+using TaskManagementSystem.Repositories.Implementtation;
 
 namespace TaskManagementSystem.WebApi.Controllers
 {
@@ -8,54 +10,49 @@ namespace TaskManagementSystem.WebApi.Controllers
     [ApiController]
     public class TaskStatusController : ControllerBase
     {
-        private readonly AppDbContext db;
+        private readonly ITaskStatusRepository Repo;
 
-        public TaskStatusController(AppDbContext _db)
+        public TaskStatusController(ITaskStatusRepository _repo)
         {
-            db = _db;
+            Repo = _repo;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(db.TaskStatuses.ToList());
+            var taskStatuses = Repo.GetAll();
+            return Ok(taskStatuses);
         }
 
         [HttpPost]
         public IActionResult AddStatus(string status)
         {
-            if (db.TaskStatuses.Any(x => x.Status == status))
+            var taskStatus = new Data.Entities.TaskStatus
             {
-                return Ok("Already Exist.");
+                Status = status
+            };
+
+            var isAdded = Repo.AddStatus(taskStatus);
+            if (isAdded)
+            {
+                return Ok(taskStatus);
             }
             else
             {
-                Data.Entities.TaskStatus taskStatus = new TaskManagementSystem.Data.Entities.TaskStatus
-                {
-                    Status = status
-                };
-
-                db.TaskStatuses.Add(taskStatus);
-                db.SaveChanges();
-
-                return Ok(taskStatus);
+                return Ok("Already Exist.");
             }
         }
 
         [HttpDelete("{status}")]
         public IActionResult Delete(string status)
         {
-            if(db.TaskStatuses.Any(x =>x.Status == status))
+            var deleted = Repo.Delete(status);
+            if (deleted)
             {
-                db.TaskStatuses.Remove(db.TaskStatuses.First(x => x.Status == status));
-                db.SaveChanges();
                 return Ok("Deleted");
             }
-            else
-            {
-                return NotFound("Specified TaskStatus does not exist");
 
-            }
+            return NotFound("Specified TaskStatus does not exist");
         }
     }
 }
