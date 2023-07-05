@@ -40,31 +40,10 @@ namespace TaskManagementSystem.WebApi.Controllers
         [HttpPost]
         public IActionResult AddDeveloper(DeveloperModel devModel)
         {
-            try
-            {
-                //  var found = db.TaskStatuses.FirstOrDefault(x => x.Status == "Pending");
 
-                var dev = new Developer
-                {
-                    Name = devModel.Name,
-                    Email = devModel.Email,
-                    Password = devModel.Password
-                };
-                var Add = repo.Add(dev);
-                if (Add == true)
-                {
-                    return Ok(dev);
-                }
-                else
-                {
-                    return Ok(false);
-                }
-            }
-            catch (Exception)
-            {
-                return Ok(false);
-            }
-
+            var Add = repo.Add(devModel);
+            return Ok(Add);
+           
         }
         [HttpPost]
         public IActionResult UpdateDeveloper(int id, DeveloperModel model)

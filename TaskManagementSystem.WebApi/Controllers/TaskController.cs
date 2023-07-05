@@ -2,6 +2,7 @@
 using System.Security.Cryptography.X509Certificates;
 using TaskManagementSystem.Repositories;
 using TaskManagementSystem.Repositories.Implemenatation;
+using TaskManagementSystem.Repositories.Models;
 using TaskManagementSystem.WebApi.Database;
 using TaskManagementSystem.WebApi.Database.Entities;
 using TaskManagementSystem.WebApi.Models;
@@ -14,12 +15,9 @@ namespace TaskManagementSystem.WebApi.Controllers
     [Route("api/[controller]/[action]")]
     public class TaskController : ControllerBase
     {
-        private readonly AppDbContext db;
-
         public TaskRepository Repo { get; }
-        public TaskController(AppDbContext _db, TaskRepository repo)
+        public TaskController(TaskRepository repo)
         {
-            db = _db;
             Repo = repo;
         }
         [HttpGet("{id}")]
@@ -42,63 +40,22 @@ namespace TaskManagementSystem.WebApi.Controllers
         [HttpPost]
         public ActionResult AddTask(AddTaskModel model)
         {
-
-            var found = db.TaskStatuses.FirstOrDefault(x => x.Status == "Pending");
-
-            var task = new Task
-            {
-                Title = model.Title,
-                Description = model.Description,
-                Status = found
-            };
-            var Add = Repo.Add(task);
-            if (Add == true)
-            {
-                return Ok(task);
-            }
-            else
-            {
-                return Ok(false);
-            }
+            var Add = Repo.Add(model);
+            return Ok(Add);
         }
-        // Edit Task EndPoint For new Branch
         [HttpPost("{id}")]
-        public IActionResult EditTask(int id, AddTaskModel model)
+        public IActionResult EditTask(int id, UpdatetaskModel model)
         {
-            var task = Repo.GetById(id);
-            if (task == null)
-            {
-                return NotFound("Task not found");
-            }
-            task.Title = model.Title;
-            task.Description = model.Description;
-            var updatedTask = Repo.Update(task);
-            if (updatedTask != null)
-            {
-                return Ok(updatedTask);
-            }
-            else
-            {
-                return Ok(false);
-            }
+            var updatedTask = Repo.Update(model, id);
+            return Ok(updatedTask);
+
         }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var task = Repo.GetById(id);
-            if (task == null)
-            {
-                return Ok(false);
-            }
             bool deleted = Repo.Delete(id);
-            if (deleted == true)
-            {
-                return Ok(true);
-            }
-            else
-            {
-                return Ok(false);
-            }
+            return Ok(deleted);
         }
     }
 }

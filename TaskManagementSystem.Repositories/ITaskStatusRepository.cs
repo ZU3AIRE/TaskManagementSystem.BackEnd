@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskManagementSystem.Database;
 using TaskManagementSystem.WebApi.Database;
+using TaskManagementSystem.WebApi.Models;
 
 namespace TaskManagementSystem.Repositories
 {
@@ -12,8 +13,8 @@ namespace TaskManagementSystem.Repositories
     {
         object GetAll();
         // WebApi.Database.Entities.TaskStatus[] GetAll();
-        bool Add(WebApi.Database.Entities.TaskStatus taskStatus);
-        bool Delete(WebApi.Database.Entities.TaskStatus taskStatus,string status);
+        bool Add(TaskStatusModel taskStatus);
+        bool Delete(string status);
      
     }
 }

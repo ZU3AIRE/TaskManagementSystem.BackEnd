@@ -5,22 +5,38 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskManagementSystem.WebApi.Database;
 using TaskManagementSystem.WebApi.Database.Entities;
+using TaskManagementSystem.WebApi.Models;
 
 namespace TaskManagementSystem.Repositories.Implemenatation
 {
     public class DeveloperRepository : IDeveloperRepository
     {
         private readonly AppDbContext db;
+        private readonly DeveloperRepository repo;
 
-        public DeveloperRepository(AppDbContext _DB)
+        public DeveloperRepository(AppDbContext _DB, DeveloperRepository repo)
         {
             db = _DB;
+            this.repo = repo;
         }
-        public bool Add(Developer developer)
+        public bool Add(DeveloperModel devModel)
         {
-            db.Developers.Add(developer);
-            db.SaveChanges();
-            return true;
+            try
+            {
+                var dev = new Developer
+                {
+                    Name = devModel.Name,
+                    Email = devModel.Email,
+                    Password = devModel.Password
+                };
+                db.Developers.Add(dev);
+                db.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public bool Delete(int id)
@@ -45,7 +61,7 @@ namespace TaskManagementSystem.Repositories.Implemenatation
             return db.Developers.FirstOrDefault(x => x.DeveloperId == id);
         }
 
-        public bool Update(Developer developer, int id)
+        public bool Update(DeveloperModel model, int id)
         {
             throw new NotImplementedException();
         }

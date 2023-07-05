@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskManagementSystem.WebApi.Database;
 using TaskManagementSystem.WebApi.Database.Entities;
+using TaskManagementSystem.WebApi.Models;
 
 namespace TaskManagementSystem.Repositories.Implemenatation
 {
-
     public class TaskStatusRepository : ITaskStatusRepository
     {
         private readonly AppDbContext db;
@@ -16,33 +16,42 @@ namespace TaskManagementSystem.Repositories.Implemenatation
         {
             db = _DB;
         }
-        public bool Add(WebApi.Database.Entities.TaskStatus taskStatus)
+        public bool Add(TaskStatusModel taskStatus)
         {
-            db.TaskStatuses.Add(taskStatus);
+            try
+            {
+                var task = new WebApi.Database.Entities.TaskStatus
+                {
+                    Status = taskStatus.Status,
+                };
+                db.TaskStatuses.Add(task);
+                db.SaveChanges();
+                return true;
+            }
+            catch
+            {
+
+                return false;
+            }
+        }
+        public bool Delete(string status)
+        {
+            var taskStatus = db.TaskStatuses.FirstOrDefault(x => x.Status == status);
+            if (taskStatus == null)
+            {
+                return false;
+            }
+
+            taskStatus.IsActive = false;
             db.SaveChanges();
+
             return true;
+
         }
-
-     
-
-        public bool Delete(WebApi.Database.Entities.TaskStatus taskStatus, string status)
-        {
-            throw new NotImplementedException();
-        }
-
         public object GetAll()
         {
             return db.TaskStatuses.ToArray();
         }
-
-        //WebApi.Database.Entities.TaskStatus[] ITaskStatusRepository.GetAll()
-        //{
-        //    return db.TaskStatuses.ToArray();
-        //}
-
-
-
-
     }
 }
 

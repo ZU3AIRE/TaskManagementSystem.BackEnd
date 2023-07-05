@@ -11,13 +11,12 @@ namespace TaskManagementSystem.WebApi.Controllers
     [ApiController]
     public class TaskStatusController : ControllerBase
     {
-        private readonly AppDbContext db;
+     
         private readonly TaskStatusRepository repo;
 
-        public TaskStatusController(AppDbContext _db, TaskStatusRepository repo)
+        public TaskStatusController(TaskStatusRepository repo)
         {
-            db = _db;
-            this.repo = repo;
+           this.repo = repo;
         }
 
         [HttpGet]
@@ -28,39 +27,24 @@ namespace TaskManagementSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddStatus(string status, TaskStatusModel model)
+        public IActionResult AddStatus(string status, TaskManagementSystem.WebApi.Models.TaskStatusModel model)
         {
-            var task = new Database.Entities.TaskStatus
-            {
-               Status = model.Status,
-            };
-            var Add = repo.Add(task);
-            if (Add == true)
-            {
-                return Ok(task);
-            }
-            else
-            {
-                return Ok(false);
-            }
-
-
+            var Add = repo.Add(model);
+            return Ok(Add);
+            
         }
 
         [HttpDelete("{status}")]
         public IActionResult Delete(string status)
         {
-            if (db.TaskStatuses.Any(x => x.Status == status))
+
+            var deleted = repo.Delete(status);
+            if (deleted)
             {
-                db.TaskStatuses.Remove(db.TaskStatuses.First(x => x.Status == status));
-                db.SaveChanges();
                 return Ok("Deleted");
             }
-            else
-            {
-                return NotFound("Specified TaskStatus does not exist");
 
-            }
+            return NotFound("Not Found");
 
         }
     }
