@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskManagementSystem.Data.Entities;
+using TaskManagementSystem.Repositories.Models;
 
 namespace TaskManagementSystem.Repositories
 {
@@ -11,6 +12,6 @@ namespace TaskManagementSystem.Repositories
     {
         User Login(string email, string password);
         User GetByEmail(string email);
-        void Signup(User user);
+        bool Signup(SignupModel model);
     }
 }

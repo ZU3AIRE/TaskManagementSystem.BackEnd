@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TaskManagementSystem.Data;
 using TaskManagementSystem.Data.Entities;
+using TaskManagementSystem.Repositories.Models;
 
 namespace TaskManagementSystem.Repositories.Implementation
 {
@@ -27,10 +29,27 @@ namespace TaskManagementSystem.Repositories.Implementation
             return db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.Email == email);
         }
 
-        public void Signup(User user)
+        public bool Signup(SignupModel model)
         {
-            db.Users.Add(user);
-            db.SaveChanges();
+            try
+            {
+                User user = new User
+                {
+                    Name = model.Name,
+                    Email = model.Email,
+                    Password = model.Password,
+                    IsActive = true
+                };
+
+                db.Users.Add(user);
+                db.SaveChanges();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

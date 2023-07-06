@@ -38,24 +38,14 @@ namespace TaskManagementSystem.WebApi.Controllers
         [HttpPost]
         public IActionResult Signup(SignupModel model)
         {
-            var existingUser = userRepository.GetByEmail(model.Email);
-
-            if (existingUser != null)
+            bool result = userRepository.Signup(model);
+            if (result)
             {
-                return Ok("User with the same email already exists.");
+                return Ok(true);
             }
             else
             {
-                var user = new User
-                {
-                    Email = model.Email,
-                    Password = model.Password,
-                    // Set other properties
-                };
-
-                userRepository.Signup(user);
-
-                return Ok(user);
+                return Ok(false);
             }
         }
     }
