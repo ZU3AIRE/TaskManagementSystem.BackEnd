@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using TaskManagementSystem.Data;
 using TaskManagementSystem.Repositories.Models;
 
-namespace TaskManagementSystem.Repositories.Implementtation
+namespace TaskManagementSystem.Repositories.Implementation
 {
     public class TaskRepository : ITaskRepository
     {

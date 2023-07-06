@@ -12,7 +12,7 @@ namespace TaskManagementSystem.Repositories
     public interface ITaskStatusRepository
     {
         TaskStatus[] GetAll();
-        bool AddStatus(TaskStatus status);
+        bool AddStatus(string status);
         bool Delete(string status);
     }
 }

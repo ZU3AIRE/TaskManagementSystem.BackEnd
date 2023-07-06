@@ -9,11 +9,11 @@ namespace TaskManagementSystem.WebApi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class UserControler : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly IUserRepositery userRepository;
+        private readonly IUserRepository userRepository;
 
-        public UserControler(IUserRepositery _userRepository)
+        public UserController(IUserRepository _userRepository)
         {
             userRepository = _userRepository;
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TaskManagementSystem.Data;
 using TaskManagementSystem.Data.Entities;
 
-namespace TaskManagementSystem.Repositories.Implementtation
+namespace TaskManagementSystem.Repositories.Implementation
 {
     public class AccountRepository : IAccountRepository
     {
@@ -19,12 +19,12 @@ namespace TaskManagementSystem.Repositories.Implementtation
 
         public User Login(string email, string password)
         {
-            return db.Users.FirstOrDefault(x => x.Email == email && x.Password == password);
+            return db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.Email == email && x.Password == password);
         }
 
         public User GetByEmail(string email)
         {
-            return db.Users.FirstOrDefault(x => x.Email == email);
+            return db.Users.Where(x => x.IsActive == true).FirstOrDefault(x => x.Email == email);
         }
 
         public void Signup(User user)

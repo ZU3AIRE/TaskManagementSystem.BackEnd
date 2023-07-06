@@ -7,7 +7,7 @@ using TaskManagementSystem.Data;
 using TaskManagementSystem.Data.Entities;
 using TaskManagementSystem.Repositories.Models;
 
-namespace TaskManagementSystem.Repositories.Implementtation
+namespace TaskManagementSystem.Repositories.Implementation
 {
     public class DeveloperRepository : IDeveloperRepository
     {

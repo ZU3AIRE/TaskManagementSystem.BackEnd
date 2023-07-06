@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskManagementSystem.Data;
 
-namespace TaskManagementSystem.Repositories.Implementtation
+namespace TaskManagementSystem.Repositories.Implementation
 {
     public class TaskStatusRepository : ITaskStatusRepository
     {
@@ -16,21 +16,25 @@ namespace TaskManagementSystem.Repositories.Implementtation
             db = _db;
         }
 
-        public bool AddStatus(Data.Entities.TaskStatus status)
+        public bool AddStatus( string status)
         {
-            if (db.TaskStatuses.Any(x => x.Status == status.Status))
+            if (db.TaskStatuses.Any(x => x.Status == status))
             {
-
-                return false; // Status already exists
-
+                return (false);
             }
+            else
+            {
+                TaskManagementSystem.Data.Entities.TaskStatus taskStatus = new Data.Entities.TaskStatus
+                {
+                    Status = status
+                };
 
-            status.IsActive = true;
-            db.TaskStatuses.Add(status);
+                taskStatus.IsActive = true;
+                db.TaskStatuses.Add(taskStatus);
+                db.SaveChanges();
 
-            db.SaveChanges();
-
-            return true; // Status added successfully
+                return (true);
+            }
         }
 
         public bool Delete(string status)

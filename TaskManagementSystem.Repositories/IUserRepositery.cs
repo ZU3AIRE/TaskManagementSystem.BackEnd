@@ -8,7 +8,7 @@ using TaskManagementSystem.Repositories.Models;
 
 namespace TaskManagementSystem.Repositories
 {
-    public interface IUserRepositery 
+    public interface IUserRepository
     {
         User[] GetAll();
         User Get(int id);

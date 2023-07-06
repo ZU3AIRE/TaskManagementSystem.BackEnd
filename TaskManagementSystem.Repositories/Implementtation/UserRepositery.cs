@@ -7,13 +7,13 @@ using TaskManagementSystem.Data;
 using TaskManagementSystem.Data.Entities;
 using TaskManagementSystem.Repositories.Models;
 
-namespace TaskManagementSystem.Repositories.Implementtation
+namespace TaskManagementSystem.Repositories.Implementation
 {
-    public class UserRepositery : IUserRepositery
+    public class UserRepository : IUserRepository
     {
         private readonly AppDbContext db;
 
-        public UserRepositery(AppDbContext dbContext)
+        public UserRepository(AppDbContext dbContext)
         {
             db = dbContext;
         }

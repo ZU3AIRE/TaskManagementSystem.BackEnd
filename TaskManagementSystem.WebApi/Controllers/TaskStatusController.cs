@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManagementSystem.Data;
 using TaskManagementSystem.Repositories;
-using TaskManagementSystem.Repositories.Implementtation;
+using TaskManagementSystem.Repositories.Implementation;
 
 namespace TaskManagementSystem.WebApi.Controllers
 {
@@ -27,20 +27,7 @@ namespace TaskManagementSystem.WebApi.Controllers
         [HttpPost]
         public IActionResult AddStatus(string status)
         {
-            var taskStatus = new Data.Entities.TaskStatus
-            {
-                Status = status
-            };
-
-            var isAdded = Repo.AddStatus(taskStatus);
-            if (isAdded)
-            {
-                return Ok(taskStatus);
-            }
-            else
-            {
-                return Ok("Already Exist.");
-            }
+            return Ok(Repo.AddStatus(status));
         }
 
         [HttpDelete("{status}")]
