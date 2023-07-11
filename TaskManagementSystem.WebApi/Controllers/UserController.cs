@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TaskManagementSystem.WebApi.Database;
-using TaskManagementSystem.WebApi.Database.Entities;
-using TaskManagementSystem.WebApi.Models;
-using TaskManagementSystem.WebApi.Utilities;
+using TaskManagementSystem.Repositories;
 
 namespace TaskManagementSystem.WebApi.Controllers
 {
@@ -10,50 +7,36 @@ namespace TaskManagementSystem.WebApi.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly AppDbContext db;
+        private readonly IUserRepository userRepo;
 
-        public UserController(AppDbContext _db)
+        public UserController(IUserRepository _userRepo)
         {
-            db = _db;
+            userRepo = _userRepo;
         }
 
-        // Login Method
-        [HttpPost]
-        public IActionResult Login(LoginModel model)
-        {
-            // Find user from db
-            var user = db.Users.FirstOrDefault(x => x.Email == model.Email && x.Password == model.Password);
+        //Get All User
 
-            if (user == null)
-            {
-                return Ok("Incorrect username or password.");
-            }
-            else
-            {
-                return Ok(true);
-            }
+        [HttpGet]
+        public IActionResult GetAllUser()
+        {
+            return Ok(userRepo.GetAll());
         }
 
-        // Signup Method
-        [HttpPost]
-        public IActionResult Signup(SignupModel model)
+        //Get All User
+
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
         {
-            if (db.Users.Any(x => x.Email == model.Email))
-            {
-                return Ok("User with same email, already exist.");
-            }
-            else
-            {
-                // Make user object
-                User user = model.ToEntity();
-
-                // Add newly created object to the DbSet
-                db.Users.Add(user);
-                db.SaveChanges();
-
-                return Ok(user);
-            }
+           
+                return Ok(userRepo.GetById(id));
         }
 
+        //Get All User
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            return Ok(userRepo.Delete(id));
+        }
     }
 }

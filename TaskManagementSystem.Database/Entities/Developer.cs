@@ -1,4 +1,4 @@
-﻿namespace TaskManagementSystem.WebApi.Database.Entities
+﻿namespace TaskManagementSystem.Database.Entities
 {
     public class Developer
     {
@@ -10,5 +10,6 @@
 
         // Navigation Property for one-to-many
         public List<Task> Tasks { get; set; } = new List<Task>();
-    }   
+        public bool IsActive { get; set; } = true;
+    }
 }

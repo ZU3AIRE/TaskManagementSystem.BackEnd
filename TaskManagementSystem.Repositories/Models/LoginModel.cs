@@ -1,4 +1,4 @@
-﻿namespace TaskManagementSystem.WebApi.Models
+﻿namespace TaskManagementSystem.Repositories.Models
 {
     public class LoginModel
     {

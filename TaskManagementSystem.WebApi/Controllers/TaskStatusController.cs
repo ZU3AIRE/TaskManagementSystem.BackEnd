@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TaskManagementSystem.WebApi.Database;
+using TaskManagementSystem.Database;
+using TaskManagementSystem.Repositories;
 
 namespace TaskManagementSystem.WebApi.Controllers
 {
@@ -8,54 +9,29 @@ namespace TaskManagementSystem.WebApi.Controllers
     [ApiController]
     public class TaskStatusController : ControllerBase
     {
-        private readonly AppDbContext db;
+        private readonly ITaskStatusRepository taskStatusRepository;
 
-        public TaskStatusController(AppDbContext _db)
+        public TaskStatusController(ITaskStatusRepository _taskStatusRepository)
         {
-            db = _db;
+            taskStatusRepository = _taskStatusRepository;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(db.TaskStatuses.ToList());
+            return Ok(taskStatusRepository.GetAll());
         }
 
         [HttpPost]
         public IActionResult AddStatus(string status)
         {
-            if (db.TaskStatuses.Any(x => x.Status == status))
-            {
-                return Ok("Already Exist.");
-            }
-            else
-            {
-                Database.Entities.TaskStatus taskStatus = new Database.Entities.TaskStatus
-                {
-                    Status = status
-                };
-
-                db.TaskStatuses.Add(taskStatus);
-                db.SaveChanges();
-
-                return Ok(taskStatus);
-            }
+            return Ok(taskStatusRepository.AddStatus(status));
         }
 
         [HttpDelete("{status}")]
         public IActionResult Delete(string status)
         {
-            if(db.TaskStatuses.Any(x =>x.Status == status))
-            {
-                db.TaskStatuses.Remove(db.TaskStatuses.First(x => x.Status == status));
-                db.SaveChanges();
-                return Ok("Deleted");
-            }
-            else
-            {
-                return NotFound("Specified TaskStatus does not exist");
-
-            }
+            return Ok(taskStatusRepository.DeleteStatus(status));
         }
     }
 }

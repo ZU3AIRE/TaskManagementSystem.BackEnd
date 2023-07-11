@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography.X509Certificates;
-using TaskManagementSystem.WebApi.Database;
-using TaskManagementSystem.WebApi.Models;
-using TaskManagementSystem.WebApi.Utilities;
+using TaskManagementSystem.Repositories;
+using TaskManagementSystem.Repositories.Models;
 
 namespace TaskManagementSystem.WebApi.Controllers
 {
@@ -10,57 +8,47 @@ namespace TaskManagementSystem.WebApi.Controllers
     [Route("api/[controller]/[action]")]
     public class TaskController : ControllerBase
     {
-        private readonly AppDbContext db;
+        private readonly ITaskRepository taskRepo;
 
-        public TaskController(AppDbContext _db)
+        public TaskController(ITaskRepository _taskRepo)
         {
-            db = _db;
+            taskRepo = _taskRepo;
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            return Ok(db.Tasks.FirstOrDefault(x => x.TaskId == id));
+            return Ok(taskRepo.GetById(id));
         }
 
         [HttpGet]
         public ActionResult GetAll()
         {
-            return Ok(db.Tasks.ToList());
+            return Ok(taskRepo.GetAll());
         }
 
         [HttpPost]
-        public ActionResult AddTask(AddTaskModel model)
+        public ActionResult AddTask(TaskModel model)
         {
-            // Create new object of Entity Task
-            Database.Entities.Task entity = model.ToEntity();
+            return Ok(taskRepo.AddTask(model));
+        }
 
-            // For adding Task Status Pending
-            var status = db.TaskStatuses.First(x => x.Status == "Pending"); 
-            entity.Status = status!;
-
-            // Add new object to the DbSet
-            db.Tasks.Add(entity);
-            db.SaveChanges();
-
-            return Ok(entity);
+        [HttpPost("{id}")]
+        public ActionResult UpdateTask(UpdateTaskModel model, int id)
+        {
+            return Ok(taskRepo.UpdateTask(model, id));
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if (db.Tasks.Any(x => x.TaskId == id))
-            {
-                db.Tasks.Remove(db.Tasks.Find(id)!);
-                db.SaveChanges();
-
-                return Ok("Deleted");
-            }
-            else
-            {
-                return NotFound("Task does not exist");
-            }
+            return Ok(taskRepo.DeleteTask(id));
         }
 
+        //[HttpPost("{taskId}")]
+        //public ActionResult AssignTo(int taskId, int developerId)
+        //{
+        //    return Ok(taskRepo.AssignTo(taskId, developerId));
+        //}
     }
 }

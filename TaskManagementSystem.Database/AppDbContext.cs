@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TaskManagementSystem.WebApi.Database.Entities;
-using Task = TaskManagementSystem.WebApi.Database.Entities.Task;
-using TaskStatus = TaskManagementSystem.WebApi.Database.Entities.TaskStatus;
+using TaskManagementSystem.Database.Entities;
+using Task = TaskManagementSystem.Database.Entities.Task;
+using TaskStatus = TaskManagementSystem.Database.Entities.TaskStatus;
 
-namespace TaskManagementSystem.WebApi.Database
+namespace TaskManagementSystem.Database
 {
     public class AppDbContext : DbContext
     {
@@ -15,5 +15,6 @@ namespace TaskManagementSystem.WebApi.Database
         public DbSet<Developer> Developers { get; set; }
         public DbSet<Task> Tasks { get; set; }
         public DbSet<TaskStatus> TaskStatuses { get; set; }
+        public DbSet<ImageFile> ImageFiles { get; set; }
     }
 }

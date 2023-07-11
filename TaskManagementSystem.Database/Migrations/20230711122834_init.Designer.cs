@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TaskManagementSystem.WebApi.Database;
+using TaskManagementSystem.Database;
 
 #nullable disable
 
-namespace TaskManagementSystem.WebApi.Migrations
+namespace TaskManagementSystem.Database.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230711122834_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace TaskManagementSystem.WebApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TaskManagementSystem.WebApi.Database.Entities.Developer", b =>
+            modelBuilder.Entity("TaskManagementSystem.Database.Entities.Developer", b =>
                 {
                     b.Property<int>("DeveloperId")
                         .ValueGeneratedOnAdd()
@@ -33,6 +36,9 @@ namespace TaskManagementSystem.WebApi.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -47,7 +53,29 @@ namespace TaskManagementSystem.WebApi.Migrations
                     b.ToTable("Developers");
                 });
 
-            modelBuilder.Entity("TaskManagementSystem.WebApi.Database.Entities.Task", b =>
+            modelBuilder.Entity("TaskManagementSystem.Database.Entities.ImageFile", b =>
+                {
+                    b.Property<int>("ImageFileId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ImageFileId"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("path")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ImageFileId");
+
+                    b.ToTable("ImageFiles");
+                });
+
+            modelBuilder.Entity("TaskManagementSystem.Database.Entities.Task", b =>
                 {
                     b.Property<int>("TaskId")
                         .ValueGeneratedOnAdd()
@@ -61,6 +89,9 @@ namespace TaskManagementSystem.WebApi.Migrations
 
                     b.Property<int?>("DeveloperId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<int>("StatusTaskStatusID")
                         .HasColumnType("int");
@@ -78,13 +109,16 @@ namespace TaskManagementSystem.WebApi.Migrations
                     b.ToTable("Tasks");
                 });
 
-            modelBuilder.Entity("TaskManagementSystem.WebApi.Database.Entities.TaskStatus", b =>
+            modelBuilder.Entity("TaskManagementSystem.Database.Entities.TaskStatus", b =>
                 {
                     b.Property<int>("TaskStatusID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskStatusID"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -95,7 +129,7 @@ namespace TaskManagementSystem.WebApi.Migrations
                     b.ToTable("TaskStatuses");
                 });
 
-            modelBuilder.Entity("TaskManagementSystem.WebApi.Database.Entities.User", b =>
+            modelBuilder.Entity("TaskManagementSystem.Database.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
@@ -106,6 +140,9 @@ namespace TaskManagementSystem.WebApi.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -120,13 +157,13 @@ namespace TaskManagementSystem.WebApi.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("TaskManagementSystem.WebApi.Database.Entities.Task", b =>
+            modelBuilder.Entity("TaskManagementSystem.Database.Entities.Task", b =>
                 {
-                    b.HasOne("TaskManagementSystem.WebApi.Database.Entities.Developer", null)
+                    b.HasOne("TaskManagementSystem.Database.Entities.Developer", null)
                         .WithMany("Tasks")
                         .HasForeignKey("DeveloperId");
 
-                    b.HasOne("TaskManagementSystem.WebApi.Database.Entities.TaskStatus", "Status")
+                    b.HasOne("TaskManagementSystem.Database.Entities.TaskStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusTaskStatusID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -135,7 +172,7 @@ namespace TaskManagementSystem.WebApi.Migrations
                     b.Navigation("Status");
                 });
 
-            modelBuilder.Entity("TaskManagementSystem.WebApi.Database.Entities.Developer", b =>
+            modelBuilder.Entity("TaskManagementSystem.Database.Entities.Developer", b =>
                 {
                     b.Navigation("Tasks");
                 });

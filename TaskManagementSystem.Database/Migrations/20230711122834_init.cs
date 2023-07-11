@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace TaskManagementSystem.WebApi.Migrations
+namespace TaskManagementSystem.Database.Migrations
 {
     /// <inheritdoc />
     public partial class init : Migration
@@ -18,11 +18,27 @@ namespace TaskManagementSystem.WebApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Developers", x => x.DeveloperId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ImageFiles",
+                columns: table => new
+                {
+                    ImageFileId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    path = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImageFiles", x => x.ImageFileId);
                 });
 
             migrationBuilder.CreateTable(
@@ -31,7 +47,8 @@ namespace TaskManagementSystem.WebApi.Migrations
                 {
                     TaskStatusID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,7 +63,8 @@ namespace TaskManagementSystem.WebApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -62,6 +80,7 @@ namespace TaskManagementSystem.WebApi.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StatusTaskStatusID = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
                     DeveloperId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -94,6 +113,9 @@ namespace TaskManagementSystem.WebApi.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ImageFiles");
+
             migrationBuilder.DropTable(
                 name: "Tasks");
 

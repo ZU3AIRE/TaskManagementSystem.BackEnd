@@ -1,8 +1,9 @@
-﻿namespace TaskManagementSystem.WebApi.Models
+﻿namespace TaskManagementSystem.Repositories.Models
 {
-    public class AddTaskModel
+    public class TaskModel
     {
         public string Title { get; set; }
         public string Description { get; set; }
+
     }
 }
