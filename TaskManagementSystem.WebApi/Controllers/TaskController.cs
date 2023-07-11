@@ -15,11 +15,15 @@ namespace TaskManagementSystem.WebApi.Controllers
     [Route("api/[controller]/[action]")]
     public class TaskController : ControllerBase
     {
+        private readonly AppDbContext db;
+
         public TaskRepository Repo { get; }
-        public TaskController(TaskRepository repo)
+        public TaskController(TaskRepository repo, AppDbContext db)
         {
             Repo = repo;
-        }
+            this.db = db;
+        }     
+
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {

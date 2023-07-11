@@ -9,5 +9,11 @@
 
         // Navigation Property for making one-to-one relationship
         public TaskStatus Status { get; set; }
+        public List<Developer> Developers { get; set; } // List of developers assigned to the task
+
+        // public int? AssignDeveloper { get; set; } 
+
+
+
     }
 }

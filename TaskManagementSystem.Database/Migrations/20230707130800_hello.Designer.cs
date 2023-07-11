@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManagementSystem.WebApi.Database;
 
@@ -11,9 +12,11 @@ using TaskManagementSystem.WebApi.Database;
 namespace TaskManagementSystem.Database.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230707130800_hello")]
+    partial class hello
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,27 +24,6 @@ namespace TaskManagementSystem.Database.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("TaskManagementSystem.Database.Entities.FileSaving", b =>
-                {
-                    b.Property<int>("FileId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FileId"));
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("FileId");
-
-                    b.ToTable("FileSavings");
-                });
 
             modelBuilder.Entity("TaskManagementSystem.WebApi.Database.Entities.Developer", b =>
                 {
@@ -74,32 +56,6 @@ namespace TaskManagementSystem.Database.Migrations
                     b.HasIndex("TaskId");
 
                     b.ToTable("Developers");
-
-                    b.HasData(
-                        new
-                        {
-                            DeveloperId = 1,
-                            Email = "zubair@gmail.com",
-                            IsActive = true,
-                            Name = "Zubair Jamil",
-                            Password = "123"
-                        },
-                        new
-                        {
-                            DeveloperId = 2,
-                            Email = "gullzaib@yahoo.com",
-                            IsActive = true,
-                            Name = "Gullzaib Khan",
-                            Password = "123"
-                        },
-                        new
-                        {
-                            DeveloperId = 3,
-                            Email = "usama@bing.com",
-                            IsActive = true,
-                            Name = "Usama Akram",
-                            Password = "123"
-                        });
                 });
 
             modelBuilder.Entity("TaskManagementSystem.WebApi.Database.Entities.Task", b =>

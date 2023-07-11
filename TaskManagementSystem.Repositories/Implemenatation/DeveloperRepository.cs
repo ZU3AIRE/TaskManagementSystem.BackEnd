@@ -11,13 +11,11 @@ namespace TaskManagementSystem.Repositories.Implemenatation
 {
     public class DeveloperRepository : IDeveloperRepository
     {
-        private readonly AppDbContext db;
-        private readonly DeveloperRepository repo;
-
-        public DeveloperRepository(AppDbContext _DB, DeveloperRepository repo)
+        private AppDbContext db { get; }
+        //private readonly AppDbContext db;
+        public DeveloperRepository(AppDbContext _DB)
         {
             db = _DB;
-            this.repo = repo;
         }
         public bool Add(DeveloperModel devModel)
         {
@@ -63,7 +61,7 @@ namespace TaskManagementSystem.Repositories.Implemenatation
 
         public bool Update(DeveloperModel model, int id)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

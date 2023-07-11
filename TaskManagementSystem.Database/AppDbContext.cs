@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TaskManagementSystem.Database.Entities;
 using TaskManagementSystem.WebApi.Database.Entities;
 using Task = TaskManagementSystem.WebApi.Database.Entities.Task;
 using TaskStatus = TaskManagementSystem.WebApi.Database.Entities.TaskStatus;
@@ -15,6 +16,7 @@ namespace TaskManagementSystem.WebApi.Database
         public DbSet<Developer> Developers { get; set; }
         public DbSet<Task> Tasks { get; set; }
         public DbSet<TaskStatus> TaskStatuses { get; set; }
+        public DbSet<FileSaving> FileSavings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,7 +26,17 @@ namespace TaskManagementSystem.WebApi.Database
                 new TaskStatus { TaskStatusID = 3, Status = "Closed", IsActive = true }
             );
 
+            // Seeding Developers 
+            modelBuilder.Entity<Developer>().HasData(
+                new Developer { DeveloperId = 1, Name = "Zubair Jamil", Email = "zubair@gmail.com", Password = "123", IsActive = true },
+                new Developer { DeveloperId = 2, Name = "Gullzaib Khan", Email = "gullzaib@yahoo.com", Password = "123", IsActive = true },
+                new Developer { DeveloperId = 3, Name = "Usama Akram", Email = "usama@bing.com", Password = "123", IsActive = true }
+
+            );
+       
+
             base.OnModelCreating(modelBuilder);
         }
+
     }
 }

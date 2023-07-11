@@ -57,7 +57,6 @@ namespace TaskManagementSystem.Repositories.Implemenatation
             {
                 return false;
             }
-
         }
 
         public WebApi.Database.Entities.Task[] GetAll()

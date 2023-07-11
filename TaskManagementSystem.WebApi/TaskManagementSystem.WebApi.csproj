@@ -20,4 +20,8 @@
     <ProjectReference Include="..\TaskManagementSystem.Repositories\TaskManagementSystem.Repositories.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Uploads\" />
+  </ItemGroup>
+
 </Project>

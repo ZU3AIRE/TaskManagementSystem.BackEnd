@@ -7,9 +7,5 @@
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public bool IsActive { get; set; } = true;
-
-
-        // Navigation Property for one-to-many
-        public List<Task> Tasks { get; set; } = new List<Task>();
-    }   
+    }
 }
