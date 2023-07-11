@@ -15,6 +15,8 @@ namespace TaskManagementSystem.Data
         public DbSet<Developer> Developers { get; set; }
         public DbSet<Task> Tasks { get; set; }
         public DbSet<TaskStatus> TaskStatuses { get; set; }
+        public DbSet<Filee> Files { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

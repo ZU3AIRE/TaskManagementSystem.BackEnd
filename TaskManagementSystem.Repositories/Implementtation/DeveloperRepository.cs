@@ -24,7 +24,7 @@ namespace TaskManagementSystem.Repositories.Implementation
             {
                 Developer dev = new Developer
                 {
-                    Name = model.Name,
+                    DeveloperName = model.Name,
                     Email = model.Email,
                     Password = model.Password,
                     IsActive = true
@@ -62,8 +62,7 @@ namespace TaskManagementSystem.Repositories.Implementation
 
         public Developer[] GetAll()
         {
-            var dev = db.Developers.Where(u => u.IsActive).ToArray();
-            return dev;
+            return db.Developers.Where(x => x.IsActive == true).ToArray();
         }
 
         public bool UpdateDeveloper(int id, DeveloperModel model)
@@ -74,7 +73,7 @@ namespace TaskManagementSystem.Repositories.Implementation
                 return false;
             }
 
-            dev.Name = model.Name;
+            dev.DeveloperName = model.Name;
             dev.Email = model.Email;
             dev.Password = model.Password;
             //user.IsActive = model.IsActive;

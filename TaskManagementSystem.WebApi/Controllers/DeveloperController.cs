@@ -21,8 +21,8 @@ namespace TaskManagementSystem.WebApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users = developerRepository.GetAll();
-            return Ok(users);
+            var dev = developerRepository.GetAll();
+            return Ok(dev);
         }
 
         [HttpGet("{id}")]

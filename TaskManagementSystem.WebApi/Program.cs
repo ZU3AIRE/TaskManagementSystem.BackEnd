@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using TaskManagementSystem.Repositories;
 using TaskManagementSystem.Repositories.Implementation;
 using TaskManagementSystem.Data;
+using Microsoft.Data.SqlClient;
+using TaskManagementSystem.Repositories.Implementtation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,9 @@ builder.Services.AddScoped<ITaskStatusRepository, TaskStatusRepository>();
 builder.Services.AddScoped<IDeveloperRepository, DeveloperRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IFileRepository, FileRepository>();
+
+
 // Added DbContext
 builder.Services.AddDbContext<AppDbContext>(x =>
 {
@@ -26,6 +31,7 @@ builder.Services.AddDbContext<AppDbContext>(x =>
 
 
 var app = builder.Build();
+app.UseStaticFiles();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
