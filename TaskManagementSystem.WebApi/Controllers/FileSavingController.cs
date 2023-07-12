@@ -29,49 +29,73 @@ namespace TaskManagementSystem.WebApi.Controllers
         {
             return Ok(db.FileSavings.ToArray());
         }
-
-        // Source Code from the Website https://code-maze.com/upload-files-dot-net-core-angular/
+        
         [HttpPost, DisableRequestSizeLimit]
         public async Task<IActionResult> UploadImg()
         {
             try
             {
-                var formCollection = await Request.ReadFormAsync();
-                var file = formCollection.Files.First();
+                string fileUrl = Request.Form["fileUrl"]; // Retrieve the file URL from the form data
 
-                var folderName = Path.Combine("wwwroot", "Uploads");
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                if (file.Length > 0)
+                if (!string.IsNullOrEmpty(fileUrl))
                 {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    var fullPath = Path.Combine(pathToSave, fileName);
-                    var dbPath = Path.Combine(folderName, fileName);
-                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    var fileName = GenerateUniqueFileName();
+
+                    if (fileUrl.StartsWith("data:"))
                     {
-                        file.CopyTo(stream);
+                        var base64Data = fileUrl.Substring(fileUrl.IndexOf(',') + 1);
+                        var fileBytes = Convert.FromBase64String(base64Data);
+                        var extension = fileUrl.Substring(fileUrl.IndexOf('/') + 1, fileUrl.IndexOf(';') - fileUrl.IndexOf('/') - 1);
+                        fileName += "." + extension;
+
+
+                        var folderName = Path.Combine("wwwroot", "Uploads");
+                        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                        var fullPath = Path.Combine(pathToSave, fileName);
+                        var dbPath = Path.Combine(folderName, fileName);
+
+                        await System.IO.File.WriteAllBytesAsync(fullPath, fileBytes);
+
+                        var fileEntity = new FileSaving
+                        {
+                            Path = dbPath,
+                            FileName = fileName,
+                        };
+                        db.FileSavings.Add(fileEntity);
+                        await db.SaveChangesAsync();
+
+                        return Ok(new { dbPath });
                     }
-                    var fileEntity = new FileSaving
-                    {
-                        Path = dbPath,
-                        FileName = fileName,
-                    };
-
-                    db.FileSavings.Add(fileEntity);
-                    await db.SaveChangesAsync();
-
-                    return Ok(new { dbPath });
                 }
-                else
-                {
-                    return BadRequest();
-                }
+
+                return BadRequest();
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal Server Error : {ex}");
+                return StatusCode(500, $"Internal Server Error: {ex}");
             }
         }
+        private string GenerateUniqueFileName()
+        {
+            var timestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            var random = new Random().Next(1000, 9999);
+            var fileName = $"{timestamp}_{random}";
 
+            return fileName;
+        }
+        [HttpGet]
+        public IActionResult GetFileNames()
+        {
+            var fileNames = db.FileSavings.Select(x => x.FileName).ToList();
+            return Ok(fileNames);
+        }
+
+        [HttpGet]
+        public IActionResult GetAllImages()
+        {
+            var fileEntities = db.FileSavings.ToList();
+            return Ok(fileEntities);
+        }
 
         [HttpDelete]
         public IActionResult Delete(int id)
