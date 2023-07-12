@@ -29,7 +29,13 @@ namespace TaskManagementSystem.Repositories.Implementtation
           db.Files.Add(fileEntity);
             db.SaveChanges();
 
-            //throw new NotImplementedException();
+           
+        }
+
+        public Data.Entities.Filee[] GetAll()
+        {
+            return db.Files.ToArray();
+
         }
     }
 }

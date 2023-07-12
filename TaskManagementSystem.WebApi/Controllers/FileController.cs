@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TaskManagementSystem.Data;
 using TaskManagementSystem.Repositories;
+using TaskManagementSystem.Repositories.Implementation;
 using TaskManagementSystem.Repositories.Implementtation;
 
 namespace TaskManagementSystem.WebApi.Controllers
@@ -17,7 +18,15 @@ namespace TaskManagementSystem.WebApi.Controllers
 
         }
 
-          [HttpPost("upload")]
+        [HttpGet]
+        public ActionResult GetAll()
+        {
+            var Files = fileRepository.GetAll();
+
+            return Ok(Files);
+        }
+
+        [HttpPost("upload")]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
             try 
@@ -34,7 +43,7 @@ namespace TaskManagementSystem.WebApi.Controllers
                 }
 
                 string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
-                string filePath = Path.Combine(uploadsFolderPath, uniqueFileName);
+                string filePath = Path.Combine(uniqueFileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
