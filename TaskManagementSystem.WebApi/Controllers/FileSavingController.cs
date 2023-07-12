@@ -29,13 +29,13 @@ namespace TaskManagementSystem.WebApi.Controllers
         {
             return Ok(db.FileSavings.ToArray());
         }
-        
+
         [HttpPost, DisableRequestSizeLimit]
         public async Task<IActionResult> UploadImg()
         {
             try
             {
-                string fileUrl = Request.Form["fileUrl"]; // Retrieve the file URL from the form data
+                string fileUrl = Request.Form["fileUrl"];
 
                 if (!string.IsNullOrEmpty(fileUrl))
                 {
