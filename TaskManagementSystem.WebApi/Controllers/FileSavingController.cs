@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Net.Http.Headers;
 using System.Net.Mime;
+using System.Text.RegularExpressions;
 using TaskManagementSystem.Database.Entities;
 using TaskManagementSystem.Database.Migrations;
 using TaskManagementSystem.WebApi.Database;
 using TaskManagementSystem.WebApi.Database.Entities;
+
 
 namespace TaskManagementSystem.WebApi.Controllers
 {
@@ -39,30 +41,48 @@ namespace TaskManagementSystem.WebApi.Controllers
 
                 if (!string.IsNullOrEmpty(fileUrl))
                 {
+                    if (!fileUrl.StartsWith("data:"))
+                    {
+                        using (var client = new HttpClient())
+                        {
+                            var response = await client.GetAsync(fileUrl);
+                            if (response.IsSuccessStatusCode)
+                            {
+                                var contentType = response.Content.Headers.ContentType.MediaType;
+                                var fileBytes = await response.Content.ReadAsByteArrayAsync();
+                                var base64Data = Convert.ToBase64String(fileBytes);
+                                fileUrl = $"data:{contentType};base64,{base64Data}";
+                            }
+                            else
+                            {
+                                return BadRequest("Invalid file URL.");
+                            }
+                        }
+                    }
+
                     var fileName = GenerateUniqueFileName();
 
-                        var base64Data = fileUrl.Substring(fileUrl.IndexOf(',') + 1);
-                        var fileBytes = Convert.FromBase64String(base64Data);
-                        var extension = fileUrl.Substring(fileUrl.IndexOf('/') + 1, fileUrl.IndexOf(';') - fileUrl.IndexOf('/') - 1);
-                        fileName += "." + extension;
+                    var base64DataFile = fileUrl.Substring(fileUrl.IndexOf(',') + 1);
+                    var fileBytesFile = Convert.FromBase64String(base64DataFile);
+                    var extension = fileUrl.Substring(fileUrl.IndexOf('/') + 1, fileUrl.IndexOf(';') - fileUrl.IndexOf('/') - 1);
+                    fileName += "." + extension;
 
+                    var folderName = Path.Combine("wwwroot", "Uploads");
+                    var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    var dbPath = Path.Combine(folderName, fileName);
 
-                        var folderName = Path.Combine("wwwroot", "Uploads");
-                        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                        var fullPath = Path.Combine(pathToSave, fileName);
-                        var dbPath = Path.Combine(folderName, fileName);
+                    await System.IO.File.WriteAllBytesAsync(fullPath, fileBytesFile);
 
-                        await System.IO.File.WriteAllBytesAsync(fullPath, fileBytes);
+                    var fileEntity = new FileSaving
+                    {
+                        Path = dbPath,
+                        FileName = fileName,
+                    };
+                    db.FileSavings.Add(fileEntity);
+                    await db.SaveChangesAsync();
 
-                        var fileEntity = new FileSaving
-                        {
-                            Path = dbPath,
-                            FileName = fileName,
-                        };
-                        db.FileSavings.Add(fileEntity);
-                        await db.SaveChangesAsync();
-
-                        return Ok(new { dbPath });
+                    return Ok(new { dbPath });
                 }
 
                 return BadRequest();
@@ -72,6 +92,8 @@ namespace TaskManagementSystem.WebApi.Controllers
                 return StatusCode(500, $"Internal Server Error: {ex}");
             }
         }
+
+
         private string GenerateUniqueFileName()
         {
             var timestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
