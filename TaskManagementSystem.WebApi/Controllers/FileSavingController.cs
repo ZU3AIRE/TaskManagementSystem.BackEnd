@@ -65,6 +65,10 @@ namespace TaskManagementSystem.WebApi.Controllers
                     var base64DataFile = fileUrl.Substring(fileUrl.IndexOf(',') + 1);
                     var fileBytesFile = Convert.FromBase64String(base64DataFile);
                     var extension = fileUrl.Substring(fileUrl.IndexOf('/') + 1, fileUrl.IndexOf(';') - fileUrl.IndexOf('/') - 1);
+                    if(extension == "octet-stream")
+                    {
+                        extension = "jpeg";
+                    }
                     fileName += "." + extension;
 
                     var folderName = Path.Combine("wwwroot", "Uploads");
@@ -144,7 +148,7 @@ namespace TaskManagementSystem.WebApi.Controllers
         [HttpGet]
         public IActionResult GetFileNames()
         {
-            var fileNames = db.FileSavings.Select(f => f.FileName).ToList();
+            var fileNames = db.FileSavings.Select(x => x.FileName).ToList();
             return Ok(fileNames);
         }
 
