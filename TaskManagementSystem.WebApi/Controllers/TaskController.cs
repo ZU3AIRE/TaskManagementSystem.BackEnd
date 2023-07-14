@@ -26,6 +26,16 @@ namespace TaskManagementSystem.WebApi.Controllers
         {
             return Ok(taskRepo.GetAll());
         }
+        [HttpGet("{title}")]
+        public IActionResult GetBySearch(string title)
+        {
+            return Ok(taskRepo.GetTaskBySearch(title));
+        }
+        [HttpGet("{statusId}")]
+        public IActionResult GetByStatus(int statusId)
+        {
+            return Ok(taskRepo.GetTaskByStatusId(statusId));
+        }
 
         [HttpPost]
         public ActionResult AddTask(TaskModel model)

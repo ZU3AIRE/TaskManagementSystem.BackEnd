@@ -59,39 +59,125 @@ namespace TaskManagementSystem.WebApi.Controllers
         [HttpPost]
         public IActionResult UploadImageByUrl()
         {
+            //try
+            //{
+            //    string fileUrl = Request.Form["fileUrl"];
+
+            //    if (!string.IsNullOrEmpty(fileUrl))
+            //    {
+            //        if (!fileUrl.StartsWith("data:"))
+            //        {
+            //            using (var client = new HttpClient())
+            //            {
+            //                var response = client.GetAsync(fileUrl).Result;
+            //                if (response.IsSuccessStatusCode)
+            //                {
+            //                    var contentType = response.Content.Headers.ContentType.MediaType;
+            //                    var fileBytes = response.Content.ReadAsByteArrayAsync().Result;
+            //                    var base64Data = Convert.ToBase64String(fileBytes);
+            //                    fileUrl = $"data:{contentType};base64,{base64Data}";
+            //                }
+            //                else
+            //                {
+            //                    return BadRequest("Invalid file URL.");
+            //                }
+            //            }
+            //        }
+
+            //        var fileName = GetUniqueFileName(fileUrl);
+
+            //        var base64DataFile = fileUrl.Substring(fileUrl.IndexOf(',') + 1);
+            //        var fileBytesFile = Convert.FromBase64String(base64DataFile);
+            //        var extension = fileUrl.Substring(fileUrl.IndexOf('/') + 1, fileUrl.IndexOf(';') - fileUrl.IndexOf('/') - 1);
+            //        if (extension == "octet-stream")
+            //        {
+            //            // Check if the file is a PDF
+            //            if (contentType == "application/pdf")
+            //            {
+            //                extension = "pdf";
+            //            }
+            //            else
+            //            {
+            //                extension = "jpeg";
+            //            }
+            //        }
+            //        fileName += "." + extension;
+
+            //        var folderName = Path.Combine("wwwroot", "Files");
+            //        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            //        var fullPath = Path.Combine(pathToSave, fileName);
+            //        var dbPath = Path.Combine(folderName, fileName);
+
+            //        System.IO.File.WriteAllBytes(fullPath, fileBytesFile);
+
+            //        var fileEntity = new ImageFile
+            //        {
+            //            name = fileName,
+            //            path = dbPath
+            //        };
+            //        db.ImageFiles.Add(fileEntity);
+            //        db.SaveChanges();
+            //        return Ok(new { dbPath });
+            //    }
+
+            //    return BadRequest();
+            //}
+            //catch (Exception ex)
+            //{
+            //    return StatusCode(500, $"Internal Server Error: {ex}");
+            //}
             try
             {
-                string fileUrl = Request.Form["fileUrl"]; 
+                string fileUrl = Request.Form["fileUrl"];
 
                 if (!string.IsNullOrEmpty(fileUrl))
                 {
+                    if (!fileUrl.StartsWith("data:"))
+                    {
+                        using (var client = new HttpClient())
+                        {
+                            var response = client.GetAsync(fileUrl).Result;
+                            if (response.IsSuccessStatusCode)
+                            {
+                                var contentType = response.Content.Headers.ContentType.MediaType;
+                                var fileBytes = response.Content.ReadAsByteArrayAsync().Result;
+                                var base64Data = Convert.ToBase64String(fileBytes);
+                                fileUrl = $"data:{contentType};base64,{base64Data}";
+                            }
+                            else
+                            {
+                                return BadRequest("Invalid file URL.");
+                            }
+                        }
+                    }
+
                     var fileName = GetUniqueFileName(fileUrl);
 
-                    if (fileUrl.StartsWith("data:"))
+                    var base64DataFile = fileUrl.Substring(fileUrl.IndexOf(',') + 1);
+                    var fileBytesFile = Convert.FromBase64String(base64DataFile);
+                    var extension = fileUrl.Substring(fileUrl.IndexOf('/') + 1, fileUrl.IndexOf(';') - fileUrl.IndexOf('/') - 1);
+                    if (extension == "octet-stream")
                     {
-                        var base64Data = fileUrl.Substring(fileUrl.IndexOf(',') + 1);
-                        var fileBytes = Convert.FromBase64String(base64Data);
-                        var extension = fileUrl.Substring(fileUrl.IndexOf('/') + 1, fileUrl.IndexOf(';') - fileUrl.IndexOf('/') - 1);
-                        fileName += "." + extension;
-
-
-                        var folderName = Path.Combine("wwwroot", "Images");
-                        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                        var fullPath = Path.Combine(pathToSave, fileName);
-                        var dbPath = Path.Combine(folderName, fileName);
-
-                        System.IO.File.WriteAllBytesAsync(fullPath, fileBytes);
-
-                        var fileEntity = new ImageFile
-                        {
-
-                            name = fileName,
-                            path = dbPath
-                        };
-                        db.ImageFiles.Add(fileEntity);
-                        db.SaveChanges();
-                        return Ok(new { dbPath });
+                        extension = "jpeg";
                     }
+                    fileName += "." + extension;
+
+                    var folderName = Path.Combine("wwwroot", "Images");
+                    var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    var dbPath = Path.Combine(folderName, fileName);
+
+                    System.IO.File.WriteAllBytes(fullPath, fileBytesFile);
+
+                    var fileEntity = new ImageFile
+                    {
+
+                        name = fileName,
+                        path = dbPath
+                    };
+                    db.ImageFiles.Add(fileEntity);
+                    db.SaveChanges();
+                    return Ok(new { dbPath });
                 }
 
                 return BadRequest();

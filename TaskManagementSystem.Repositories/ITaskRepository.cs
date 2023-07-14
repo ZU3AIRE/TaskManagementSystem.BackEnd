@@ -15,6 +15,8 @@ namespace TaskManagementSystem.Repositories
         bool AddTask(TaskModel model);
         bool UpdateTask(UpdateTaskModel model, int id);
         bool DeleteTask(int id);
+        Task[] GetTaskBySearch(string title);
+        Task[] GetTaskByStatusId(int statusId);
         //bool AssignTo(int taskid, int developerId);
     }
 }

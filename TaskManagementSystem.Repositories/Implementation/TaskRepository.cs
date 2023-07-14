@@ -79,6 +79,16 @@ namespace TaskManagementSystem.Repositories.Implementation
             return (db.Tasks.Include(x => x.Status).FirstOrDefault(x => x.TaskId == id && x.IsActive == true)!);
         }
 
+        public Database.Entities.Task[] GetTaskBySearch(string title)
+        {
+            return (db.Tasks.Include(x => x.Status).Where(x => x.Title.Contains(title) && x.IsActive == true).ToArray());
+        }
+
+        public Database.Entities.Task[] GetTaskByStatusId(int statusId)
+        {
+            return (db.Tasks.Include(x => x.Status).Where(x => x.Status.TaskStatusID == statusId && x.IsActive == true).ToArray());
+        }
+
         public bool UpdateTask(UpdateTaskModel model, int id)
         {
             var task = db.Tasks.FirstOrDefault(x => x.TaskId == id);
